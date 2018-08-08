@@ -5,7 +5,7 @@
     "ResourcenamePrefix": {
       "type": "string",
       "minLength": 3,
-      "maxLength": 12,
+      "maxLength": 25,
       "metadata": {
         "description": "Resource Naming prefix for each new resource created. 3-char min, 8-char max, lowercase alphanumeric"
       }
