@@ -2,12 +2,28 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "namePrefix": {
+    "ResourcenamePrefix": {
       "type": "string",
       "minLength": 3,
-      "maxLength": 8,
+      "maxLength": 12,
       "metadata": {
-        "description": "Naming prefix for each new resource created. 3-char min, 8-char max, lowercase alphanumeric"
+        "description": "Resource Naming prefix for each new resource created. 3-char min, 8-char max, lowercase alphanumeric"
+      }
+    },
+    "VMnamePrefix": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 12,
+      "metadata": {
+        "description": "VM Naming prefix for each new resource created. 3-char min, 8-char max, lowercase alphanumeric"
+      }
+    },
+    "Clusterprefix": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 12,
+      "metadata": {
+        "description": "Cluster Naming prefix for each new resource created. 3-char min, 8-char max, lowercase alphanumeric"
       }
     },
     "domainName": {
@@ -24,7 +40,7 @@
     },
     "adminPassword": {
       "type": "securestring",
-      "minLength": 12,
+      "minLength": 8,
       "metadata": {
         "description": "Password for the Administrator account of the existing Active Directory Domain"
       }
@@ -37,7 +53,7 @@
     },
     "svcPassword": {
       "type": "securestring",
-      "minLength": 12,
+      "minLength": 8,
       "metadata": {
         "description": "Password for the Service Account in the existing Active Directory Domain"
       }
@@ -71,7 +87,7 @@
     "vmDiskSize": {
       "type": "int",
       "minValue": 128,
-      "maxValue": 1023,
+      "maxValue": 2046,
       "metadata": {
         "description": "Size of each data disk in GB on each VM (Min=128, Max=1023)"
       }
@@ -109,24 +125,24 @@
   },
   "variables": {
     "apiVersionStorage": "2016-01-01",
-    "witnessStorageName": "[concat(parameters('namePrefix'),uniqueString(resourceGroup().id),'cw')]",
+    "witnessStorageName": "[concat(parameters('ResourcenamePrefix'),'cloudwitness')]",
     "witnessStorageType": "Standard_LRS",
-    "vmNamePrefix": "[concat(parameters('namePrefix'),'-fci-')]",
-    "vmAvailabilitySetName": "[concat(variables('vmNamePrefix'),'as')]",
-    "clusterName": "[concat(variables('vmNamePrefix'),'c')]",
-    "sqlClusterName": "[concat(variables('vmNamePrefix'),'sql')]",
+    "vmNametypePrefix": "[concat(parameters('VMnamePrefix'),'DB')]",
+    "vmAvailabilitySetName": "[concat(parameters('ResourcenamePrefix'),'as')]",
+    "clusterName": "[concat(parameters('ClusterPrefix'),'c')]",
+    "sqlClusterName": "[concat(parameters('ClusterPrefix'),'sql')]",
     "vmLoopTemplateURL": "[concat(parameters('_artifactsLocation'),'/nestedtemplates/newVM.json',parameters('_artifactsLocationSasToken'))]",
     "sfciPrepModulesURL": "[concat(parameters('_artifactsLocation'),'/dsc/prep-sfci.ps1.zip',parameters('_artifactsLocationSasToken'))]",
     "sfciPrepFunction": "PrepSFCI.ps1\\PrepSFCI",
     "sfciConfigModulesURL": "[concat(parameters('_artifactsLocation'),'/dsc/config-sfci.ps1.zip',parameters('_artifactsLocationSasToken'))]",
     "sfciConfigFunction": "ConfigSFCI.ps1\\ConfigSFCI",
-    "ilbName": "[concat(parameters('namePrefix'),'-ilb')]",
+    "ilbName": "[concat(parameters('ResourcenamePrefix'),'.ilb')]",
     "ilbID": "[resourceId('Microsoft.Network/loadBalancers',variables('ilbName'))]",
-    "ilbFE": "[concat(parameters('namePrefix'),'-ilb-fe')]",
-    "ilbBE": "[concat(parameters('namePrefix'),'-ilb-be')]",
+    "ilbFE": "[concat(parameters('ResourcenamePrefix'),'.ilb.fe')]",
+    "ilbBE": "[concat(parameters('ResourcenamePrefix'),'.ilb.be')]",
     "ilbFEConfigID1": "[concat(variables('ilbID'),'/frontendIPConfigurations/',variables('ilbFE'))]",
     "ilbBEAddressPoolID": "[concat(variables('ilbID'),'/backendAddressPools/',variables('ilbBE'))]",
-    "ilbProbe1": "[concat(parameters('namePrefix'),'ilbp1')]",
+    "ilbProbe1": "[concat(parameters('ResourcenamePrefix'),'.ilb.p1')]",
     "ilbProbeID1": "[concat(variables('ilbID'),'/probes/',variables('ilbProbe1'))]"
   },
   "resources": [
@@ -232,7 +248,7 @@
       "comments": "The load balancer to enable communication with the SQL cluster resource"
     },
     {
-      "name": "[concat(variables('vmNamePrefix'), copyindex(), '-nic')]",
+      "name": "[concat(variables('vmNametypePrefix'), copyindex(), '-nic')]",
       "type": "Microsoft.Network/networkInterfaces",
       "location": "[resourceGroup().location]",
       "apiVersion": "2017-10-01",
@@ -270,7 +286,7 @@
         "name": "virtualMachineLoop",
         "count": "[parameters('vmCount')]"
       },
-      "name": "[concat(variables('vmNamePrefix'),copyindex(),'-newVM')]",
+      "name": "[concat(variables('vmNametypePrefix'),copyindex(),'-newVM')]",
       "dependsOn": [
         "nicLoop",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('vmAvailabilitySetName'))]"
@@ -282,7 +298,7 @@
         },
         "parameters": {
           "vmName": {
-            "value": "[concat(variables('vmNamePrefix'), copyindex())]"
+            "value": "[concat(variables('vmNametypePrefix'), copyindex())]"
           },
           "vmAvailabilitySetName": {
             "value": "[variables('vmAvailabilitySetName')]"
@@ -320,7 +336,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmNamePrefix'),copyindex(1),'/sfciPrep')]",
+      "name": "[concat(variables('vmNametypePrefix'),copyindex(1),'/sfciPrep')]",
       "apiVersion": "2017-12-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
@@ -361,7 +377,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmNamePrefix'),'0/sfciConfig')]",
+      "name": "[concat(variables('vmNametypePrefix'),'0/sfciConfig')]",
       "apiVersion": "2017-12-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
@@ -382,7 +398,7 @@
             "clusterName": "[variables('clusterName')]",
             "sqlClusterName": "[variables('sqlClusterName')]",
             "clusterIP": "[parameters('clusterIP')]",
-            "vmNamePrefix": "[variables('vmNamePrefix')]",
+            "vmNamePrefix": "[variables('vmNametypePrefix')]",
             "vmCount": "[parameters('vmCount')]",
             "vmDiskSize": "[parameters('vmDiskSize')]",
             "witnessStorageName": "[variables('witnessStorageName')]",
