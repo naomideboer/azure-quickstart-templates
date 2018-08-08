@@ -15,31 +15,40 @@
       "value": 2
     },
     "existingDomainName": {
-      "value": "contoso.com"
+      "value": "wpdev.local"
     },
     "adminUsername": {
       "value": "localadmin"
     },
     "adminPassword": {
-      "value": "GEN-PASSWORD"
+      "value": "@gr1f1rm@dm1n!"
     },
     "svcUsername": {
-      "value": "sqlService"
+      "value": "sqladmin"
     },
     "svcPassword": {
-      "value": "GEN-PASSWORD"
+      "value": "SQLadmin2018!"
     },
     "existingVirtualNetworkRGName": {
-      "value": "infrastructure"
+      "value": "rajnaomitest"
     },
     "existingVirtualNetworkName": {
-      "value": "vnet1"
+      "value": "adVNET"
     },
     "existingSubnetName": {
-      "value": "data"
+      "value": "adSubnet"
     },
     "clusterIP": {
-      "value": "192.168.0.100"
+      "value": "10.0.0.20"
+    },
+    "VMnamePrefix": {
+      "value": "NLADVM"
+    },
+    "ResourcenamePrefix": {
+      "value": "dev.we.core.sql.01"
+    },
+    "ClusterPrefix": {
+      "value": "NLADVMWDS01"
     }
   }
 }
