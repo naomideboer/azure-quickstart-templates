@@ -5,7 +5,7 @@
     "ResourcenamePrefix": {
       "type": "string",
       "minLength": 3,
-      "maxLength": 12,
+      "maxLength": 25,
       "metadata": {
         "description": "Resource Naming prefix for each new resource created. 3-char min, 8-char max, lowercase alphanumeric"
       }
@@ -127,7 +127,7 @@
     "apiVersionStorage": "2016-01-01",
     "witnessStorageName": "[concat(parameters('ResourcenamePrefix'),'cloudwitness')]",
     "witnessStorageType": "Standard_LRS",
-    "vmNametypePrefix": "[concat(parameters('VMnamePrefix'),'DB')]",
+    "vmNametypePrefix": "[concat(parameters('VMnamePrefix'),'DB', copyIndex(1))]",
     "vmAvailabilitySetName": "[concat(parameters('ResourcenamePrefix'),'as')]",
     "clusterName": "[concat(parameters('ClusterPrefix'),'c')]",
     "sqlClusterName": "[concat(parameters('ClusterPrefix'),'sql')]",
@@ -248,7 +248,7 @@
       "comments": "The load balancer to enable communication with the SQL cluster resource"
     },
     {
-      "name": "[concat(variables('vmNametypePrefix'), copyindex(), '-nic')]",
+      "name": "[concat(variables('vmNametypePrefix'), copyindex(1), '-nic')]",
       "type": "Microsoft.Network/networkInterfaces",
       "location": "[resourceGroup().location]",
       "apiVersion": "2017-10-01",
@@ -286,7 +286,7 @@
         "name": "virtualMachineLoop",
         "count": "[parameters('vmCount')]"
       },
-      "name": "[concat(variables('vmNametypePrefix'),copyindex(),'-newVM')]",
+      "name": "[concat(variables('vmNametypePrefix'),copyindex(1),'-newVM')]",
       "dependsOn": [
         "nicLoop",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('vmAvailabilitySetName'))]"
@@ -298,7 +298,7 @@
         },
         "parameters": {
           "vmName": {
-            "value": "[concat(variables('vmNametypePrefix'), copyindex())]"
+            "value": "[concat(variables('vmNametypePrefix'), copyindex(1))]"
           },
           "vmAvailabilitySetName": {
             "value": "[variables('vmAvailabilitySetName')]"
