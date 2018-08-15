@@ -230,7 +230,8 @@
             "frontendPort": 445,
             "backendPort": 445,
             "enableFloatingIP": true
-          },
+          }
+
       },
 
       "probes": [
