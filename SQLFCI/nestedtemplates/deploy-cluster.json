@@ -125,7 +125,7 @@
   },
   "variables": {
     "apiVersionStorage": "2016-01-01",
-    "witnessStorageName": "[concat(parameters('ResourcenamePrefix'),'cloudwitness')]",
+    "witnessStorageName": "[concat(parameters('Clusterprefix'),'cloudwitness')]",
     "witnessStorageType": "Standard_LRS",
     "vmNametypePrefix": "[concat(parameters('VMnamePrefix'),'DB')]",
     "vmAvailabilitySetName": "[concat(parameters('ResourcenamePrefix'),'as')]",
