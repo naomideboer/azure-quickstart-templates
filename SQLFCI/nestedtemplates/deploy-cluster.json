@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
@@ -223,30 +223,31 @@
               "backendAddressPool": {
                 "id": "[variables('ilbBEAddressPoolID')]"
               },
-'              "probe": {
-                "id": "[variables('ilbProbeID1')]"
-              },
-              "protocol": "Tcp",
-              "frontendPort": 445,
-              "backendPort": 445,
-              "enableFloatingIP": true
-            }
-          }
-        ],
-        "probes": [
-          {
-            "name": "[variables('ilbProbe1')]",
-            "properties": {
-              "protocol": "Tcp",
-              "port": 37000,
-              "intervalInSeconds": 5,
-              "numberOfProbes": 2
-            }
-          }
-        ]
+              "'              \"probe\": {": null,
+              "id": "[variables('ilbProbeID1')]"
+            },
+            "protocol": "Tcp",
+            "frontendPort": 445,
+            "backendPort": 445,
+            "enableFloatingIP": true
+          },
       },
-      "comments": "The load balancer to enable communication with the SQL cluster resource"
+
+      "probes": [
+        {
+          "name": "[variables('ilbProbe1')]",
+          "properties": {
+            "protocol": "Tcp",
+            "port": 37000,
+            "intervalInSeconds": 5,
+            "numberOfProbes": 2
+          }
+        }
+      ]
     },
+    "comments",
+    "The load balancer to enable communication with the SQL cluster resource"
+
     {
       "name": "[concat(variables('vmNametypePrefix'), padLeft(copyindex(1),3,'0'), '-nic', copyindex(1))]",
       "type": "Microsoft.Network/networkInterfaces",
