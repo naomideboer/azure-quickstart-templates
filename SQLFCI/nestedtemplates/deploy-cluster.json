@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
@@ -125,9 +125,9 @@
   },
   "variables": {
     "apiVersionStorage": "2016-01-01",
-    "witnessStorageName": "[concat(parameters('ResourcenamePrefix'),'cloudwitness')]",
+    "witnessStorageName": "[concat(parameters('Clusterprefix'),'cloudwitness')]",
     "witnessStorageType": "Standard_LRS",
-    "vmNametypePrefix": "[concat(parameters('VMnamePrefix'),'DB', copyIndex(1))]",
+    "vmNametypePrefix": "[concat(parameters('VMnamePrefix'),'DB')]",
     "vmAvailabilitySetName": "[concat(parameters('ResourcenamePrefix'),'as')]",
     "clusterName": "[concat(parameters('ClusterPrefix'),'c')]",
     "sqlClusterName": "[concat(parameters('ClusterPrefix'),'sql')]",
@@ -286,7 +286,7 @@
         "name": "virtualMachineLoop",
         "count": "[parameters('vmCount')]"
       },
-      "name": "[concat(variables('vmNametypePrefix'),copyindex(1),'-newVM')]",
+      "name": "[concat(variables('vmNametypePrefix'),copyindex(1))]",
       "dependsOn": [
         "nicLoop",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('vmAvailabilitySetName'))]"
@@ -298,7 +298,7 @@
         },
         "parameters": {
           "vmName": {
-            "value": "[concat(variables('vmNametypePrefix'), copyindex(1))]"
+            "value": "[concat(variables('vmNametypePrefix'),copyindex(1))]"
           },
           "vmAvailabilitySetName": {
             "value": "[variables('vmAvailabilitySetName')]"
